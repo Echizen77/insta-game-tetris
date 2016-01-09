@@ -1,2 +1,2 @@
-rootProject.name = "Wanted: Bad-ou-Alyve"
+rootProject.name = "Bad-ou-Alyve"
 include 'core', 'desktop', 'android'
