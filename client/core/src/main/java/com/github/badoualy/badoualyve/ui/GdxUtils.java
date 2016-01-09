@@ -22,8 +22,6 @@ public final class GdxUtils {
 
     public void loadHomeAssets() {
         assetManager.load(AssetsUtils.BG_HOME, Texture.class);
-        assetManager.load(AssetsUtils.BG_DIALOG, Texture.class);
-        assetManager.load(AssetsUtils.BG_PANEL, Texture.class);
         assetManager.load(AssetsUtils.BG_STATS, Texture.class);
         assetManager.load(AssetsUtils.BG_BT_DUEL, Texture.class);
     }

@@ -1,5 +1,7 @@
 package com.github.badoualy.badoualyve.model;
 
+import java.util.Observable;
+
 public class Player {
 
     private String name = "";
@@ -31,6 +33,8 @@ public class Player {
     }
 
     public void setPower(int power) {
+        if (power >= 100000)
+            power = 100000;
         this.power = power;
     }
 
@@ -39,6 +43,8 @@ public class Player {
     }
 
     public void setDef(int def) {
+        if (def >= 100000)
+            def = 100000;
         this.def = def;
     }
 
@@ -47,6 +53,8 @@ public class Player {
     }
 
     public void setSpeed(int speed) {
+        if (speed >= 100000)
+            speed = 100000;
         this.speed = speed;
     }
 
@@ -55,6 +63,8 @@ public class Player {
     }
 
     public void setMagic(int magic) {
+        if (magic >= 100000)
+            magic = 100000;
         this.magic = magic;
     }
 
@@ -63,6 +73,8 @@ public class Player {
     }
 
     public void setStamina(int stamina) {
+        if (stamina >= 100000)
+            stamina = 100000;
         this.stamina = stamina;
     }
 }
