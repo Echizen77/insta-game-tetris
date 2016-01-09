@@ -10,7 +10,7 @@ public final class AssetsUtils {
 
     public static final String SOUND_START = "start.mp3";
 
-    public static final String FONT = "font.fnt";
+    public static final String FONT = "font.ttf";
 
     private AssetsUtils() {
 

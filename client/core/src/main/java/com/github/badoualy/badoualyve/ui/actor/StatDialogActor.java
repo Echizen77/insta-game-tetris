@@ -19,7 +19,7 @@ public class StatDialogActor extends Group {
     private Player player;
 
     private Image background;
-    private BitmapFont font;
+    private BitmapFont font, smallFont;
 
     private String title;
     private List<String> stats = new ArrayList<String>();
@@ -30,6 +30,7 @@ public class StatDialogActor extends Group {
         this.player = player;
         background = new Image(gdxUtils().getTexture(AssetsUtils.BG_STATS));
         font = WantedGame.gdxUtils().getDefaultFont();
+        smallFont = WantedGame.gdxUtils().getDefaultFontSmall();
         setSize(background.getWidth(), background.getHeight());
 
         // Compute title width
@@ -56,13 +57,11 @@ public class StatDialogActor extends Group {
         super.draw(batch, parentAlpha);
 
         if (title != null) {
-            font.getData().setScale(1f);
-            font.draw(batch, title, getX() + getWidth() / 2 - titleWidth / 2, getTop() - 20);
+            font.draw(batch, title, getX() + getWidth() / 2 - titleWidth / 2, getTop() - 25);
         }
 
         for (int i = 0; i < stats.size(); i++) {
-            font.getData().setScale(0.8f);
-            font.draw(batch, stats.get(i), getX() + 70, getY() + 150 - (i * font.getLineHeight()));
+            smallFont.draw(batch, stats.get(i), getX() + 70, getY() + 150 - (i * smallFont.getLineHeight()));
         }
     }
 

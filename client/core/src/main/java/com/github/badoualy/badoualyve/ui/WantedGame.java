@@ -50,7 +50,6 @@ public class WantedGame extends Game {
 
     private void displayHomeScreen() {
         gdxUtils.assetManager.finishLoading();
-        gdxUtils.getDefaultFont().setColor(0.4f, 0.4f, 0.4f, 1f);
 
         homeScreen = new FixedFpsScreen(new HomeStage(), 30); // 30 is way more than enough for a home screen
         setScreen(homeScreen);

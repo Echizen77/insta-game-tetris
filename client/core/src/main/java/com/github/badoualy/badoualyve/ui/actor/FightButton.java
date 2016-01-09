@@ -48,6 +48,6 @@ public class FightButton extends Group {
         super.draw(batch, parentAlpha);
 
         font.draw(batch, playerName, getX() + 10, getY() + getHeight() / 2 + 10);
-        font.draw(batch, "Click here to fight", getWidth() - 132, getY() + getHeight() / 2 + 10);
+        font.draw(batch, "Click here to fight", getWidth() - 145, getY() + getHeight() / 2 + 10);
     }
 }
