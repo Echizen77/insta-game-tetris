@@ -14,21 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.badoualy.badoualyve.desktop;
+package com.github.badoualy.badoualyve.listener;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
+import com.github.badoualy.badoualyve.model.Player;
 
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = WantedGame.TITLE;
-        config.width = WantedGame.V_WIDTH;
-        config.height = WantedGame.V_HEIGHT;
-        config.resizable = false;
-        config.addIcon("icon.png", Files.FileType.Internal);
-        new LwjglApplication(new WantedGame(), config);
-    }
+/** Callback to notify that the server signed in the user */
+public interface OnSignedListener {
+    void onSignedIn(Player player);
 }

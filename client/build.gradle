@@ -40,7 +40,7 @@ project(":desktop") {
 
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 
-        //compile "de.tomgrill.gdxdialogs:gdx-dialogs-desktop:1.0.0"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-desktop:1.0.0"
 
         //compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
 
@@ -78,7 +78,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
 
-        //compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.0.0"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.0.0"
 
         //compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         //natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
@@ -112,7 +112,7 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.2"
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.2"
 
-        //compile "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.0.0"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.0.0"
 
         //compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
 
@@ -127,5 +127,6 @@ project(":core") {
         //compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 
         compile 'io.reactivex:rxjava:1.1.0'
+        compile 'com.google.code.gson:gson:2.5'
     }
 }

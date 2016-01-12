@@ -14,21 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.badoualy.badoualyve.desktop;
+package com.github.badoualy.badoualyve.model;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
+import java.util.ArrayList;
 
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = WantedGame.TITLE;
-        config.width = WantedGame.V_WIDTH;
-        config.height = WantedGame.V_HEIGHT;
-        config.resizable = false;
-        config.addIcon("icon.png", Files.FileType.Internal);
-        new LwjglApplication(new WantedGame(), config);
+public class HomeMessage {
+
+    public String message;
+    public ArrayList<Operation> operationList = new ArrayList<>();
+
+    public HomeMessage(String message) {
+        this.message = message;
+    }
+
+    public void addOperation(String url, String description) {
+        operationList.add(new Operation(url, description));
+    }
+
+    public static class Operation {
+        String url;
+        String description;
+
+        public Operation(String url, String description) {
+            this.url = url;
+            this.description = description;
+        }
     }
 }

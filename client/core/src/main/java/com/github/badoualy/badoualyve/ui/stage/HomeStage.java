@@ -1,12 +1,30 @@
+/**
+ * This file is part of WANTED: Bad-ou-Alyve.
+ *
+ * WANTED: Bad-ou-Alyve is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WANTED: Bad-ou-Alyve is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.github.badoualy.badoualyve.ui.stage;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.github.badoualy.badoualyve.listener.OnFightListener;
 import com.github.badoualy.badoualyve.ui.AssetsUtils;
 import com.github.badoualy.badoualyve.ui.actor.FightButton;
-import com.github.badoualy.badoualyve.ui.actor.StatDialogActor;
+import com.github.badoualy.badoualyve.ui.actor.StatDialog;
+import com.github.badoualy.badoualyve.ui.screen.FixedFpsScreen;
 
 import static com.github.badoualy.badoualyve.ui.WantedGame.*;
 
@@ -18,10 +36,14 @@ public class HomeStage extends Stage {
 
     // Actors
     private Image background;
-    private StatDialogActor dialogStat;
+    private StatDialog dialogStat;
     private FightButton btFight;
 
-    public HomeStage() {
+    private OnFightListener listener;
+
+    public HomeStage(OnFightListener listener) {
+        this.listener = listener;
+
         initViewport();
         initActors();
     }
@@ -40,12 +62,18 @@ public class HomeStage extends Stage {
         background = gdxUtils().createImageFromTexture(AssetsUtils.BG_HOME);
 
         // Create a dialog in the upper-right corner
-        dialogStat = new StatDialogActor(player());
+        dialogStat = new StatDialog(player());
         dialogStat.setPosition(WIDTH - dialogStat.getWidth(), HEIGHT - dialogStat.getHeight());
-        dialogStat.setTitle(player().getName());
+        dialogStat.setTitle(player().name);
 
-        // Our match-making button
-        btFight = new FightButton(player().getName());
+        // Our match-making button, wrap the listener to change stage
+        btFight = new FightButton(player().name, new OnFightListener() {
+            @Override
+            public void onFight() {
+                game().setScreen(new FixedFpsScreen(new LoadingStage(), 30));
+                listener.onFight();
+            }
+        });
         btFight.setPosition(10, getHeight() - btFight.getHeight() - 10);
 
         // The order matters! It defines the order of acting/drawing

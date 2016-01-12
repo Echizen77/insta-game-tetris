@@ -1,7 +1,21 @@
+/**
+ * This file is part of WANTED: Bad-ou-Alyve.
+ *
+ * WANTED: Bad-ou-Alyve is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WANTED: Bad-ou-Alyve is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.github.badoualy.badoualyve.ui.actor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.github.badoualy.badoualyve.listener.OnFightListener;
 import com.github.badoualy.badoualyve.ui.AssetsUtils;
 import com.github.badoualy.badoualyve.ui.WantedGame;
 
@@ -20,12 +35,14 @@ public class FightButton extends Group {
 
     private ImageButton btFight;
     private BitmapFont font;
-    private Sound startSound;
 
     private String playerName;
 
-    public FightButton(String playerName) {
+    private OnFightListener listener;
+
+    public FightButton(String playerName, final OnFightListener listener) {
         this.playerName = playerName;
+        this.listener = listener;
 
         btFight = new ImageButton(new TextureRegionDrawable(new TextureRegion(gdxUtils().getTexture(AssetsUtils.BG_BT_DUEL))));
         font = WantedGame.gdxUtils().getDefaultFont();
@@ -33,12 +50,10 @@ public class FightButton extends Group {
         setSize(btFight.getWidth(), btFight.getHeight());
         addActor(btFight);
 
-        startSound = Gdx.audio.newSound(Gdx.files.internal(AssetsUtils.SOUND_START));
-
         btFight.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                startSound.play();
+                listener.onFight();
             }
         });
     }

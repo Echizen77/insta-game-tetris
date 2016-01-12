@@ -14,21 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.badoualy.badoualyve.desktop;
+package com.github.badoualy.badoualyve.net;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
+import rx.Single;
 
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = WantedGame.TITLE;
-        config.width = WantedGame.V_WIDTH;
-        config.height = WantedGame.V_HEIGHT;
-        config.resizable = false;
-        config.addIcon("icon.png", Files.FileType.Internal);
-        new LwjglApplication(new WantedGame(), config);
+/** Convenience and beauty wrapper for NetworkCallable **/
+public class NetworkOperation<T> {
+
+    private Class<T> clazz; // Hack the get the type's class
+
+    private final String url;
+    private final String parameter;
+
+    public NetworkOperation(String url, Class<T> clazz) {
+        this(url, null, clazz);
+    }
+
+    public NetworkOperation(String url, String parameter, Class<T> clazz) {
+        this.clazz = clazz;
+
+        this.url = url;
+        this.parameter = parameter != null && !parameter.isEmpty() ? parameter : null;
+    }
+
+    public Single<T> execute() {
+        return new NetworkCallable<T>(url, parameter, clazz).toObservable();
     }
 }

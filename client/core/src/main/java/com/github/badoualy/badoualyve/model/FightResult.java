@@ -14,21 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with WANTED: Bad-ou-Alyve.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.badoualy.badoualyve.desktop;
+package com.github.badoualy.badoualyve.model;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
+import com.google.gson.annotations.SerializedName;
 
-public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = WantedGame.TITLE;
-        config.width = WantedGame.V_WIDTH;
-        config.height = WantedGame.V_HEIGHT;
-        config.resizable = false;
-        config.addIcon("icon.png", Files.FileType.Internal);
-        new LwjglApplication(new WantedGame(), config);
+/** Maps the response received by the server after a fight */
+public class FightResult {
+
+    public static final short VICTORY = 1;
+    public static final short DEFEAT = 2;
+    public static final short NO_OPPONENT_FOUND = -1;
+
+    public short result;
+    @SerializedName("user")
+    public Player player;
+
+    public FightResult() {
+
+    }
+
+    public FightResult(short result, Player player) {
+        this.result = result;
+        this.player = player;
     }
 }
