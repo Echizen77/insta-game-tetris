@@ -46,6 +46,13 @@ public class IntroStage extends Stage {
 
         initActors();
         startSound = Gdx.audio.newMusic(Gdx.files.internal(AssetsUtils.SOUND_START));
+        Gdx.input.setOnscreenKeyboardVisible(true);
+    }
+
+    @Override
+    public void dispose() {
+        Gdx.input.setOnscreenKeyboardVisible(false);
+        super.dispose();
     }
 
     private void initActors() {

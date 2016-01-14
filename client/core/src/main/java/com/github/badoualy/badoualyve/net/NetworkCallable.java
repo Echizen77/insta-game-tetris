@@ -50,7 +50,7 @@ public class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener
     private final Net.HttpRequest request;
 
     private T result;
-    private Throwable error;
+    private Exception error;
 
     public NetworkCallable(String url, Class<T> clazz) {
         this(url, null, clazz);
@@ -79,10 +79,14 @@ public class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener
             condition.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            if (error != null)
+            if (error == null)
                 error = e;
         }
         lock.unlock();
+
+        if (error != null)
+            throw error;
+
         return result;
     }
 
@@ -101,7 +105,7 @@ public class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener
     @Override
     public void failed(Throwable t) {
         lock.lock();
-        this.error = t;
+        this.error = new Exception(t);
         condition.signalAll();
         lock.unlock();
     }

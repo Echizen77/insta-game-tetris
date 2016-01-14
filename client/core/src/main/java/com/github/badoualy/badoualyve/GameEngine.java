@@ -81,6 +81,13 @@ public class GameEngine implements OnSignInListener, OnFightListener {
                 .execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.computation())
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        // TODO....
+                        System.exit(0);
+                    }
+                })
                 .doOnSuccess(new Action1<Player>() {
                     @Override
                     public void call(Player player) {
