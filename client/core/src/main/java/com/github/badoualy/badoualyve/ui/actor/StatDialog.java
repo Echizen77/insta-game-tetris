@@ -61,6 +61,8 @@ public class StatDialog extends Group {
     @Override
     public void act(float delta) {
         super.act(delta);
+
+        // Update stat values to display
         stats.clear();
         stats.add("Attack: " + player.attack);
         stats.add("Defense: " + player.defense);

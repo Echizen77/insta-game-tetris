@@ -16,28 +16,36 @@
  */
 package com.github.badoualy.badoualyve.net;
 
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.net.HttpRequestBuilder;
+
+import java.util.concurrent.locks.ReentrantLock;
+
 import rx.Single;
 
 /** Convenience and beauty wrapper for NetworkCallable **/
 public class NetworkOperation<T> {
 
-    private Class<T> clazz; // Hack the get the type's class
-
-    private final String url;
-    private final String parameter;
+    private final Class<T> clazz; // One of the multiple way to get T's class
+    private final Net.HttpRequest request;
 
     public NetworkOperation(String url, Class<T> clazz) {
         this(url, null, clazz);
     }
 
     public NetworkOperation(String url, String parameter, Class<T> clazz) {
-        this.clazz = clazz;
+        this(new HttpRequestBuilder().newRequest()
+                                     .method(Net.HttpMethods.GET)
+                                     .url(parameter != null && parameter.length() > 0 ? String.format(url, parameter) : url)
+                                     .build(), clazz);
+    }
 
-        this.url = url;
-        this.parameter = parameter != null && !parameter.isEmpty() ? parameter : null;
+    public NetworkOperation(Net.HttpRequest request, Class<T> clazz) {
+        this.clazz = clazz;
+        this.request = request;
     }
 
     public Single<T> execute() {
-        return new NetworkCallable<T>(url, parameter, clazz).toObservable();
+        return new NetworkCallable<T>(request, clazz).toObservable();
     }
 }

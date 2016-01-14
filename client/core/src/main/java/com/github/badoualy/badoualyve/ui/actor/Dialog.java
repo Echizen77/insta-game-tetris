@@ -38,7 +38,7 @@ public class Dialog extends Group {
     private float messageWith = 0f;
     private float inputWidth = 0f;
 
-    private float counter;
+    private float counter = 0f;
     private boolean displaying = true;
 
     public Dialog() {
@@ -62,9 +62,14 @@ public class Dialog extends Group {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
+        // Center top title
         font.draw(batch, title, getX() + getWidth() / 2 - titleWidth / 2, getTop() - 30);
+
+        // Blinking message
         if (displaying)
             font.draw(batch, message, getX() + getWidth() / 2 - messageWith / 2, getY() + 80);
+
+        // Current input
         font.draw(batch, inputValue, getX() + getWidth() / 2 - inputWidth / 2, getTop() - 150);
     }
 
@@ -82,7 +87,8 @@ public class Dialog extends Group {
 
     public void setTitle(String title) {
         this.title = title;
-        // Compute title width
+
+        // Compute new title width
         GlyphLayout layout = new GlyphLayout(); // Don't do this every frame! Store it as member
         layout.setText(font, title);
         titleWidth = layout.width;
@@ -93,8 +99,8 @@ public class Dialog extends Group {
     }
 
     public void setInputValue(String inputValue) {
-        this.inputValue = inputValue ;
-        // Compute input width
+        this.inputValue = inputValue;
+        // Compute new input width
         GlyphLayout layout = new GlyphLayout(); // Don't do this every frame! Store it as member
         layout.setText(font, inputValue);
         inputWidth = layout.width;
@@ -102,7 +108,7 @@ public class Dialog extends Group {
 
     public void keyTyped(char c) {
         inputValue += c;
-        // Compute input width
+        // Compute new input width
         GlyphLayout layout = new GlyphLayout(); // Don't do this every frame! Store it as member
         layout.setText(font, inputValue);
         inputWidth = layout.width;

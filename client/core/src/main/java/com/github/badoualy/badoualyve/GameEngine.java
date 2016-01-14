@@ -64,6 +64,7 @@ public class GameEngine implements OnSignInListener, OnFightListener {
 
     /**
      * Simulates Automatic evolution (time)
+     * This method was copied from the server's code
      */
     public void updateUserStats() {
         long delta = System.currentTimeMillis() - player.lastUpdateTime;
@@ -85,6 +86,9 @@ public class GameEngine implements OnSignInListener, OnFightListener {
                     public void call(Player player) {
                         System.out.println("Connected as " + player.name);
                         GameEngine.this.player = player;
+                        start();
+
+                        // Notify the UI
                         playerSignedInListener.onSignedIn(player);
                     }
                 }).subscribe();
@@ -103,6 +107,8 @@ public class GameEngine implements OnSignInListener, OnFightListener {
                         if (fightResult.player == null && fightResult.result != FightResult.NO_OPPONENT_FOUND)
                             throw new RuntimeException("Weird stuff happened");
                         player.copyFrom(fightResult.player);
+
+                        // Notify the UI
                         fightFinishedListener.onFightFinished(fightResult.result);
                     }
                 }).subscribe();
@@ -116,8 +122,13 @@ public class GameEngine implements OnSignInListener, OnFightListener {
                 .doOnSuccess(new Action1<Player>() {
                     @Override
                     public void call(Player player) {
+                        // We have to use this method to keep the same player instance, because the UI is using this instance
                         GameEngine.this.player.copyFrom(player);
                     }
                 }).subscribe();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

@@ -40,33 +40,38 @@ public class BadOuAlyveApplication extends WebMvcConfigurerAdapter {
 
     private static String DB_PATH = System.getProperty("java.io.tmpdir") + "badoualyve_" + System.currentTimeMillis() + ".json";
     private static GameEngine gameHandler = new GameEngine(DB_PATH);
+    private final String LOGGER_NAME = "BadOuAlyve";
 
+    /** This method is called when accessing the API root, display usage */
     @RequestMapping("/")
     @ResponseBody
     public HomeMessage home() {
-        Logger.getLogger("BadOuAlyve").info("home()");
-        HomeMessage homeMessage = new HomeMessage("Welcome to WANTED: Bad-ou-Alyve server!");
+        Logger.getLogger(LOGGER_NAME).info("home()");
 
+        HomeMessage homeMessage = new HomeMessage("Welcome to WANTED: Bad-ou-Alyve server!");
         homeMessage.addOperation("/connect/{name}", "Connect to the server as {name}");
         homeMessage.addOperation("/users/{name}", "Get self as {name}");
         homeMessage.addOperation("/users/{name}/fight", "Fight as {name}");
         return homeMessage;
     }
 
+    /** Connect a new user on the server */
     @RequestMapping("/connect/{name}")
     @ResponseBody
     public User connect(@PathVariable final String name) throws IOException {
-        Logger.getLogger("BadOuAlyve").info("connect(): " + name);
+        Logger.getLogger(LOGGER_NAME).info("connect(): " + name);
 
         User user = gameHandler.generateNewUser(name);
         gameHandler.save();
         return user;
     }
 
+    /** Return the user's data after updating his stats */
     @RequestMapping("/users/{name}")
     @ResponseBody
     public User user(@PathVariable final String name) throws IOException {
-        Logger.getLogger("BadOuAlyve").info("user(): " + name);
+        Logger.getLogger(LOGGER_NAME).info("user(): " + name);
+
         User user = gameHandler.findUser(name);
         gameHandler.updateUserStatsAndSave(user);
         return user;
@@ -75,21 +80,21 @@ public class BadOuAlyveApplication extends WebMvcConfigurerAdapter {
     @RequestMapping("/users/{name}/fight")
     @ResponseBody
     public FightResult userFight(@PathVariable final String name) throws IOException {
-        Logger.getLogger("BadOuAlyve").info("userFight(): " + name);
-        User user = gameHandler.findUser(name);
+        Logger.getLogger(LOGGER_NAME).info("userFight(): " + name);
 
-        User opponent = gameHandler.findOpponent(user); // Match-making
+        User user = gameHandler.findUser(name); // Retrieve user
+        User opponent = gameHandler.findOpponent(user); // Match-making algorithm
         if (opponent == null){
             // return no opponent found
             gameHandler.updateUserStatsAndSave(user);
             return new FightResult(FightResult.NO_OPPONENT_FOUND, user);
         }
 
-        Logger.getLogger("BadOuAlyve").info("userFight(): " + name + " vs " + opponent.name);
-        boolean wonFight = gameHandler.resolveFight(user, opponent);
+        Logger.getLogger(LOGGER_NAME).info("userFight(): " + name + " vs " + opponent.name);
+        boolean wonFight = gameHandler.resolveFight(user, opponent); // Resolve fight
         gameHandler.save();
 
-        Logger.getLogger("BadOuAlyve").info("userFight(): won " + wonFight);
+        Logger.getLogger(LOGGER_NAME).info("userFight(): won " + wonFight);
         return new FightResult(wonFight ? FightResult.VICTORY : FightResult.DEFEAT, user);
     }
 
@@ -100,6 +105,7 @@ public class BadOuAlyveApplication extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // Configure spring to use Gson to map object to json for response
         GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
         converters.add(gsonHttpMessageConverter);
     }

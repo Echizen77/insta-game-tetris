@@ -26,6 +26,7 @@ public class FightResult {
     public static final short NO_OPPONENT_FOUND = -1;
 
     public short result;
+    // @SerializedName indicates to Gson that when converting this object from/to a json, the field name should be "user" and not "player"
     @SerializedName("user")
     public Player player;
 

@@ -42,6 +42,8 @@ public class HomeStage extends Stage {
     private OnFightListener listener;
 
     public HomeStage(OnFightListener listener) {
+        // The clean way to be able to call a method when an event occurs is to wrap this event into a listener, even if we know the target
+        // will always be the GameEngine. This way, it doesn't create any dependency to it, and can be easily changed at any time
         this.listener = listener;
 
         initViewport();

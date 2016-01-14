@@ -33,6 +33,7 @@ import de.tomgrill.gdxdialogs.core.GDXDialogsSystem;
 import de.tomgrill.gdxdialogs.core.dialogs.GDXButtonDialog;
 import de.tomgrill.gdxdialogs.core.listener.ButtonClickListener;
 
+/** Main class for GDX framework, handle displaying different screens, and our game engine */
 public class WantedGame extends Game implements OnSignedListener, OnFightFinishedListener {
 
     public static final String TITLE = "WANTED: Bad-ou-Alyve";
@@ -49,15 +50,15 @@ public class WantedGame extends Game implements OnSignedListener, OnFightFinishe
     private GDXDialogs dialogs;
 
     private GameEngine gameEngine;
-    private Player player;
 
     private boolean playerSignedIn = false;
     private int fightResult = 0;
 
     @Override
     public void create() {
-        // We can't use only static method here, due to how android handles resources / static
-        gdxUtils = new com.github.badoualy.badoualyve.ui.GdxUtils();
+        // We can't use only static method here, due to how android handles resources / static, it may causes bugs such as
+        // assets not correctly reloaded after a "home button" press then re-opening the app
+        gdxUtils = new GdxUtils();
         Texture.setAssetManager(gdxUtils.assetManager);
 
         dialogs = GDXDialogsSystem.install();
@@ -68,8 +69,10 @@ public class WantedGame extends Game implements OnSignedListener, OnFightFinishe
         // Adjust width to keep good ratio on mobile screens
         V_WIDTH = (V_HEIGHT * WIDTH) / HEIGHT;
 
+        // Our "controller" class
         gameEngine = new GameEngine(this, this);
 
+        // First screen, login
         displayIntroScreen();
     }
 
@@ -81,15 +84,20 @@ public class WantedGame extends Game implements OnSignedListener, OnFightFinishe
 
     @Override
     public void render() {
-        if (player != null && !playerSignedIn) {
+        // Main-loop method, automatically called by gdx
+
+        if (gameEngine.getPlayer() != null && !playerSignedIn) {
+            // Means the user just signed in, go to home screen
             playerSignedIn = true;
             displayHomeScreen();
-            startDemo();
         } else if (fightResult != 0) {
+            // A fight result just came in, go back to home screen
             displayHomeScreen();
             showResultDialog(fightResult);
             fightResult = 0;
         }
+
+        // This call will render the currently displaying screen
         super.render();
     }
 
@@ -107,25 +115,9 @@ public class WantedGame extends Game implements OnSignedListener, OnFightFinishe
         setScreen(new FixedFpsScreen(new HomeStage(gameEngine), 30));// 30 is way more than enough for a home screen
     }
 
-    private void startDemo() {
-        gameEngine.start();
-    }
-
-    public static WantedGame game() {
-        return ((WantedGame) Gdx.app.getApplicationListener());
-    }
-
-    public static GdxUtils gdxUtils() {
-        return ((WantedGame) Gdx.app.getApplicationListener()).gdxUtils;
-    }
-
-    public static Player player() {
-        return ((WantedGame) Gdx.app.getApplicationListener()).player;
-    }
-
     @Override
     public void onSignedIn(Player player) {
-        this.player = player;
+        // Do something interesting...
     }
 
     @Override
@@ -159,5 +151,20 @@ public class WantedGame extends Game implements OnSignedListener, OnFightFinishe
 
         dialog.addButton("OK");
         dialog.build().show();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////////// SOME USEFUL STATIC METHODS TO ACCESS VALUES FROM ANYWHERE //////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    public static WantedGame game() {
+        return ((WantedGame) Gdx.app.getApplicationListener());
+    }
+
+    public static GdxUtils gdxUtils() {
+        return ((WantedGame) Gdx.app.getApplicationListener()).gdxUtils;
+    }
+
+    public static Player player() {
+        return ((WantedGame) Gdx.app.getApplicationListener()).gameEngine.getPlayer();
     }
 }

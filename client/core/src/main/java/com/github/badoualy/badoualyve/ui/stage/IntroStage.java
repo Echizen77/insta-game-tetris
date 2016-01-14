@@ -40,6 +40,8 @@ public class IntroStage extends Stage {
     private OnSignInListener listener;
 
     public IntroStage(OnSignInListener listener) {
+        // The clean way to be able to call a method when an event occurs is to wrap this event into a listener, even if we know the target
+        // will always be the GameEngine. This way, it doesn't create any dependency to it, and can be easily changed at any time
         this.listener = listener;
 
         initActors();
@@ -73,7 +75,7 @@ public class IntroStage extends Stage {
 
     @Override
     public boolean keyDown(int keyCode) {
-        if (keyCode == Input.Keys.ENTER) {
+        if (keyCode == Input.Keys.ENTER && dialog.getInputValue().length() > 0) {
             startSound.setOnCompletionListener(new Music.OnCompletionListener() {
                 @Override
                 public void onCompletion(Music music) {

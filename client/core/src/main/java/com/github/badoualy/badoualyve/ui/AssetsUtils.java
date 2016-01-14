@@ -16,20 +16,23 @@
  */
 package com.github.badoualy.badoualyve.ui;
 
+/** Utils class to store the name of each asset, it makes is easily modifiable */
 public final class AssetsUtils {
 
+    /////////////////////////// Images ///////////////////////////
     public static final String BG_HOME = "bg_home.jpg";
     public static final String BG_DIALOG = "bg_dialog.png";
     public static final String BG_STATS = "bg_stats.png";
     public static final String BG_BT_DUEL = "bg_bt_duel.png";
     public static final String IC_LOADING = "ic_loading.png";
 
+    /////////////////////////// Sounds ///////////////////////////
     public static final String SOUND_START = "start.mp3";
 
+    /////////////////////////// Fonts ///////////////////////////
     public static final String FONT = "font.ttf";
 
     private AssetsUtils() {
-
     }
 
 }

@@ -30,7 +30,7 @@ import com.github.badoualy.badoualyve.ui.WantedGame;
 
 import static com.github.badoualy.badoualyve.ui.WantedGame.gdxUtils;
 
-
+// We also could've make FightButton override ImageButton and override its draw method
 public class FightButton extends Group {
 
     private ImageButton btFight;

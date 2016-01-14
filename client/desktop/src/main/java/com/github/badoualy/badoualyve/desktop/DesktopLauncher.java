@@ -24,6 +24,7 @@ import com.github.badoualy.badoualyve.ui.WantedGame;
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        // Customize your desktop application window
         config.title = WantedGame.TITLE;
         config.width = WantedGame.V_WIDTH;
         config.height = WantedGame.V_HEIGHT;

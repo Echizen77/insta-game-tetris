@@ -28,6 +28,7 @@ public class Player {
 
     public long lastUpdateTime;
 
+    /** Copy the value from the given player to this instance */
     public void copyFrom(Player player) {
         name = player.name;
         token = player.token;

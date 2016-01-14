@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,18 +31,23 @@ import java.util.concurrent.locks.ReentrantLock;
 import rx.Observable;
 import rx.Single;
 
-/** Utility class to wrap a Gdx net call to a callable to use in a synchronous way (and with ReactiveX) */
-class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener {
+/**
+ * Utility class to wrap a Gdx net call to a callable to use in a synchronous way (and with ReactiveX)
+ * The GDX net API is async, you just give a listener for response/failure/cancellation.
+ * We could've just created an observable from it, but this way we also have the possibility to use it with the {@link java.util.concurrent.Future} API
+ *
+ * @param <T> response type (will be inflated from json
+ */
+public class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private Class<T> clazz; // Hack the get the type's class
 
     private final Lock lock;
-    private Condition condition;
+    private final Condition condition;
 
-    private final String url;
-    private final String parameter;
+    private final Net.HttpRequest request;
 
     private T result;
     private Throwable error;
@@ -51,22 +57,22 @@ class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener {
     }
 
     public NetworkCallable(String url, String parameter, Class<T> clazz) {
+        this(new HttpRequestBuilder().newRequest()
+                                     .method(Net.HttpMethods.GET)
+                                     .url(parameter != null && parameter.length() > 0 ? String.format(url, parameter) : url)
+                                     .build(), clazz);
+    }
+
+    public NetworkCallable(Net.HttpRequest request, Class<T> clazz) {
         this.clazz = clazz;
+        this.request = request;
 
         lock = new ReentrantLock();
         condition = lock.newCondition();
-
-        this.url = url;
-        this.parameter = parameter != null && !parameter.isEmpty() ? parameter : null;
     }
 
     @Override
     public T call() throws Exception {
-        Net.HttpRequest request = new HttpRequestBuilder().newRequest()
-                                                          .method(Net.HttpMethods.GET)
-                                                          .url(parameter != null ? String.format(url, parameter) : url)
-                                                          .build();
-
         lock.lock();
         Gdx.net.sendHttpRequest(request, this);
         try {
@@ -96,7 +102,7 @@ class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener {
     public void failed(Throwable t) {
         lock.lock();
         this.error = t;
-        condition.notifyAll();
+        condition.signalAll();
         lock.unlock();
     }
 
@@ -113,7 +119,14 @@ class NetworkCallable<T> implements Callable<T>, Net.HttpResponseListener {
         return result;
     }
 
+    /** Wrap the callable into an observable */
     public Single<T> toObservable() {
+        // The RX library has an API to wrap an observable to an Observable
         return Observable.fromCallable(this).toSingle();
+    }
+
+    /** Creates a FutureTask from this callable */
+    public FutureTask<T> toFuture() {
+        return new FutureTask<T>(this);
     }
 }

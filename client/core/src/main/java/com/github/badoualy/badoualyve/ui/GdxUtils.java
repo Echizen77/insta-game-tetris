@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+/** Utils class to makes it easy to load resources from assets */
 public final class GdxUtils {
 
     /** Game's asset manager */
@@ -36,17 +37,20 @@ public final class GdxUtils {
 
     }
 
+    /** Preload all the assets necessary for the intro stage */
     public void loadIntroAssets() {
         assetManager.load(AssetsUtils.BG_DIALOG, Texture.class);
         assetManager.load(AssetsUtils.IC_LOADING, Texture.class);
     }
 
+    /** Preload all the assets necessary for the home stage */
     public void loadHomeAssets() {
         assetManager.load(AssetsUtils.BG_HOME, Texture.class);
         assetManager.load(AssetsUtils.BG_STATS, Texture.class);
         assetManager.load(AssetsUtils.BG_BT_DUEL, Texture.class);
     }
 
+    /** Shortcut new Image(getTexture(name)) */
     public Image createImageFromTexture(String name) {
         return new Image(getTexture(name));
     }
@@ -68,14 +72,18 @@ public final class GdxUtils {
 
     private void initDefaultFontIfNeeded() {
         if (defaultFont == null) {
+            // Use gdx-freetype extension to create the default font
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(AssetsUtils.FONT));
             FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-            parameter.size = 22;
             parameter.color = new Color(0.4f, 0.4f, 0.4f, 1f);
-            defaultFontSmall = generator.generateFont(parameter); // font size 12 pixels
 
+            // Small font
+            parameter.size = 22;
+            defaultFontSmall = generator.generateFont(parameter); // font size 22
+
+            // Normal font
             parameter.size = 26;
-            defaultFont = generator.generateFont(parameter); // font size 12 pixels
+            defaultFont = generator.generateFont(parameter); // font size 26
 
             generator.dispose(); // don't forget to dispose to avoid memory leaks!
         }
