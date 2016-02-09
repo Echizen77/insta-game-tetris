@@ -150,18 +150,15 @@ public class WorldRenderer implements Disposable {
 
         batch.begin();
 
-        // Genere l'image de fond d'ecran du jeu
-        //batch.draw(new Texture(Gdx.files.internal("tetris/images/main_screen.png")), 0, 0, gameWidth, gameHeight);
-        renderPlayfield();
-
-        if (worldController.gameState == WorldController.GameState.Running || worldController.gameState == WorldController.GameState.GameOver)
+        if (worldController.gameState == WorldController.GameState.Login){
+            batch.draw(new Texture(Gdx.files.internal("tetris/images/main_screen.png")), 0, 0, gameWidth, gameHeight);
             renderNextTetromino();
-
-        renderScore();
-
-        renderControls();
-
-        if (worldController.gameState == WorldController.GameState.GameOver) {
+        }
+        else if(worldController.gameState == WorldController.GameState.Running){
+            batch.draw(new Texture(Gdx.files.internal("tetris/images/game_screen.png")), 0, 0, gameWidth, gameHeight);
+            renderNextTetromino();
+        }
+        else if (worldController.gameState == WorldController.GameState.GameOver){
             gameOverGlyphLayout.setText(gameOverFont, GAME_OVER);
             float textWidth = gameOverGlyphLayout.width;
             float textHeight = gameOverGlyphLayout.height;
@@ -172,31 +169,31 @@ public class WorldRenderer implements Disposable {
             gameOverFont.setColor(Color.RED);
             gameOverFont.draw(batch, GAME_OVER, textX, textY);
         }
-
+        if(worldController.gameState == WorldController.GameState.Running || worldController.gameState == WorldController.GameState.GameOver){
+            renderPlayfield();
+            renderScore();
+        }
+        else
+            renderControls();
 
         batch.end();
-
         frameBuffer.end();
-
         fbBatch.begin();
         fbBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1, 1);
         fbBatch.end();
 
         if (worldController.windowStage != null) {
-
             worldController.windowStage.draw();
-
         }
-
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
     private void renderControls() {
         switch (worldController.gameState) {
-            case Running:
+            case Login: batch.draw(Assets.instance.controls.play, playX, playY, CONTROL_WIDTH, CONTROL_WIDTH);
                 break;
             default:
-                batch.draw(Assets.instance.controls.play, playX, playY, CONTROL_WIDTH, CONTROL_WIDTH);
+                break;
         }
     }
 
@@ -247,10 +244,9 @@ public class WorldRenderer implements Disposable {
                             y = FIELD_MARGIN_TOP + 25 + (i * BLOCK_WIDTH/2);
                         }
                         else{
-                            x = playfieldWidth - 10 + ((worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);  //(marginRightCenterX - (worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);
+                            x = playfieldWidth - 10 + ((worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);
                             y = FIELD_MARGIN_TOP + 40 + (i * BLOCK_WIDTH/2);
                         }
-
                         drawBlock(worldController.nextTetromino.type, x, y, true);
                     }
                 }
@@ -260,15 +256,11 @@ public class WorldRenderer implements Disposable {
 
     // Rendu de la partie jouable
     public synchronized void renderPlayfield() {
-
-        //logIntArray(playfield, "playfield");
-
         for (int i = 2; i < gameWorld.playfield.length; i++) {
             for (int j = 0; j < gameWorld.playfield[0].length; j++) {
                 if (gameWorld.playfield[i][j] > 0) {
                     int x = WorldRenderer.FIELD_MARGIN_LEFT + j * WorldRenderer.BLOCK_WIDTH;
                     int y = WorldRenderer.FIELD_MARGIN_TOP + (i - 2) * WorldRenderer.BLOCK_WIDTH;
-                    //Gdx.app.debug(TAG, "i = " + i);
                     drawBlock(gameWorld.playfield[i][j], x, y);
                 }
             }

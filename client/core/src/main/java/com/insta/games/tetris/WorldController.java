@@ -51,7 +51,7 @@ public class WorldController {
     private void init() {
         //TODO:
         prefs = Gdx.app.getPreferences("Nitris");
-        gameState = GameState.Start;
+        gameState = GameState.Login;
         tetromino = new Tetromino(gameWorld, this);
         nextTetromino = new Tetromino(gameWorld, this);
         levelRowsRemoved = 0;
@@ -61,7 +61,7 @@ public class WorldController {
 
     public void update() {
         switch (gameState) {
-            case Start:
+            case Login:
                 checkMenuControls();
                 break;
             case Running:
@@ -291,7 +291,7 @@ public class WorldController {
     }
 
     enum GameState {
-        Start, Running, GameOver //,Intro, Options
+        Login, Running, GameOver //,Intro, Options
     }
 
 
