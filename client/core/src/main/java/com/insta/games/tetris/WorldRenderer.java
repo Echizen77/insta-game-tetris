@@ -173,8 +173,6 @@ public class WorldRenderer implements Disposable {
             renderPlayfield();
             renderScore();
         }
-        else
-            renderControls();
 
         batch.end();
         frameBuffer.end();
@@ -184,16 +182,6 @@ public class WorldRenderer implements Disposable {
 
         if (worldController.windowStage != null) {
             worldController.windowStage.draw();
-        }
-    }
-
-    @SuppressWarnings("SuspiciousNameCombination")
-    private void renderControls() {
-        switch (worldController.gameState) {
-            case Login: batch.draw(Assets.instance.controls.play, playX, playY, CONTROL_WIDTH, CONTROL_WIDTH);
-                break;
-            default:
-                break;
         }
     }
 
