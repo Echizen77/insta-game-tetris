@@ -16,21 +16,17 @@
  */
 package com.github.badoualy.badoualyve.desktop;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
-import com.insta.game.tetris.TetrisGame;
+import com.insta.games.tetris.TetrisGame;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        // Customize your desktop application window
-        config.title = WantedGame.TITLE;
-        config.width = WantedGame.V_WIDTH;
-        config.height = WantedGame.V_HEIGHT;
+        config.width = 600;
+        config.height = 640;
         config.resizable = false;
-        config.addIcon("icon.png", Files.FileType.Internal);
+        config.vSyncEnabled = true;
         new LwjglApplication(new TetrisGame(), config);
     }
 }

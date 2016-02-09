@@ -17,11 +17,9 @@
 package com.github.badoualy.badoualyve.android;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.github.badoualy.badoualyve.ui.WantedGame;
-import com.insta.game.tetris.TetrisGame;
+import com.insta.games.tetris.TetrisGame;
 
 public class AndroidLauncher extends AndroidApplication {
 
