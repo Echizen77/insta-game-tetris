@@ -23,15 +23,15 @@ public class Tetromino {
     public static final String TAG = Tetromino.class.getName();
 
     private boolean[][] gridI = {
-            {false, false, false, false},
-            {true, true, true, true},
-            {false, false, false, false},
-            {false, false, false, false}};
+            {true, false, false, false},
+            {true, false, false, false},
+            {true, false, false, false},
+            {true, false, false, false}};
 
     private boolean[][] gridO = {
-            {false, true, true, false},
-            {false, true, true, false},
-            {false, false, false, false}};
+            {false, false, false, false},
+            {true, true, false, false},
+            {true, true, false, false}};
 
     private boolean[][] gridT = {
             {false, true, false},

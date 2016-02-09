@@ -23,8 +23,8 @@ import com.insta.games.tetris.TetrisGame;
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 600;
-        config.height = 640;
+        config.width = 355;
+        config.height = 625;
         config.resizable = false;
         config.vSyncEnabled = true;
         new LwjglApplication(new TetrisGame(), config);
