@@ -30,8 +30,11 @@ public class WorldRenderer implements Disposable {
     private GameWorld gameWorld;
     private ShapeRenderer shapeRenderer;
 
-    public static final int FIELD_MARGIN_LEFT = 20;
-    public static final int FIELD_MARGIN_TOP = 20;
+    public static final int FIELD_MARGIN_LEFT = 1;
+    public static final int FIELD_MARGIN_TOP = 25;
+
+    public static final int SCORE_MARGIN_LEFT = 5;
+    public static final int SCORE_MARGIN_TOP = 5;
 
     public static final int BLOCK_WIDTH = 30;
     public static final int CONTROL_WIDTH = 100;
@@ -49,6 +52,7 @@ public class WorldRenderer implements Disposable {
     private int marginRightCenterX;
     private int marginBottomCenterY;
     private BitmapFont scoreFont;
+    private BitmapFont levelFont;
     public int playX;
     public int playY;
     private GlyphLayout gameOverGlyphLayout;
@@ -100,6 +104,11 @@ public class WorldRenderer implements Disposable {
         parameter.flip = true;
         scoreFont = generator.generateFont(parameter);
 
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("tetris/kenvector_future.ttf"));
+        parameter.size = 10;
+        parameter.flip = true;
+        levelFont = generator.generateFont(parameter);
+
         frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) gameWidth, (int) gameHeight, false);
         fbBatch = new SpriteBatch();
 
@@ -110,9 +119,7 @@ public class WorldRenderer implements Disposable {
         playfieldCenterY = FIELD_MARGIN_TOP + playfieldHeight / 2;
 
         marginRightCenterX = (int) (FIELD_MARGIN_LEFT + playfieldWidth + ((gameWidth - playfieldWidth - FIELD_MARGIN_LEFT) / 2));
-
         marginBottomCenterY = (int) (gameHeight - ((gameHeight - (FIELD_MARGIN_TOP + playfieldHeight)) / 2));
-
 
         playX = (int) (gameWidth - (gameWidth / 4) - (CONTROL_WIDTH / 2));
         playY = marginBottomCenterY - (CONTROL_WIDTH);
@@ -122,10 +129,8 @@ public class WorldRenderer implements Disposable {
     }
 
     public void render() {
-
         renderWorld();
         camera.update();
-
     }
 
     private synchronized void renderWorld() {
@@ -140,14 +145,13 @@ public class WorldRenderer implements Disposable {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         shapeRenderer.setColor(0 / 255f, 0 / 255f, 0 / 255f, 1f);
-        shapeRenderer.rect(FIELD_MARGIN_LEFT, FIELD_MARGIN_TOP,
-                playfieldWidth, playfieldHeight);
+        shapeRenderer.rect(FIELD_MARGIN_LEFT, FIELD_MARGIN_TOP, playfieldWidth, playfieldHeight, Color.BLACK, Color.BLACK,Color.BLACK,Color.BLACK);
         shapeRenderer.end();
 
         batch.begin();
 
         // Genere l'image de fond d'ecran du jeu
-        batch.draw(new Texture(Gdx.files.internal("tetris/images/game_screen.png")), 0, 0, gameWidth, gameHeight);
+        //batch.draw(new Texture(Gdx.files.internal("tetris/images/main_screen.png")), 0, 0, gameWidth, gameHeight);
         renderPlayfield();
 
         if (worldController.gameState == WorldController.GameState.Running || worldController.gameState == WorldController.GameState.GameOver)
@@ -196,37 +200,39 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    // Rendu du block du score
+    // Rendu du block du score et du level
     private void renderScore() {
         scoreGlyphLayout.setText(scoreFont, SCORE);
-        float textWidth = scoreGlyphLayout.width;
         float textHeight = scoreGlyphLayout.height;
-        float textX = marginRightCenterX - textWidth / 2;
-        float textY = playfieldCenterY / 2 - textHeight / 2;
-        scoreFont.setColor(Color.RED);
-
+        float textX = SCORE_MARGIN_LEFT;
+        float textY = SCORE_MARGIN_TOP;
+        scoreFont.setColor(Color.WHITE);
         scoreFont.draw(batch, SCORE, textX, textY);
 
         String score = String.valueOf(gameWorld.score);
         scoreGlyphLayout.setText(scoreFont, score);
-        textWidth = scoreGlyphLayout.width;
-        textX = marginRightCenterX - textWidth / 2;
-        textY += textHeight * 1.3f;
+        if (gameWorld.score < 10)
+            textX = FIELD_MARGIN_LEFT + playfieldWidth - 15;
+        else  if (gameWorld.score < 100)
+            textX = FIELD_MARGIN_LEFT + playfieldWidth - 41;
+        else  if (gameWorld.score < 1000)
+            textX = FIELD_MARGIN_LEFT + playfieldWidth - 50;
+        else  if (gameWorld.score < 10000)
+            textX = FIELD_MARGIN_LEFT + playfieldWidth - 70;
+        else  if (gameWorld.score < 100000)
+            textX = FIELD_MARGIN_LEFT + playfieldWidth - 90;
         scoreFont.draw(batch, score, textX, textY);
 
-        scoreGlyphLayout.setText(scoreFont, LEVEL);
-        textWidth = scoreGlyphLayout.width;
-        textX = marginRightCenterX - textWidth / 2;
-        textY += textHeight * 2.6f;
-        scoreFont.draw(batch, LEVEL, textX, textY);
+        scoreGlyphLayout.setText(levelFont, LEVEL);
+        textX = playfieldWidth + 8;
+        textY += textHeight * 10f;
+        levelFont.draw(batch, LEVEL, textX, textY);
 
         String level = String.valueOf(gameWorld.level);
-        scoreGlyphLayout.setText(scoreFont, level);
-        textWidth = scoreGlyphLayout.width;
-        textX = marginRightCenterX - textWidth / 2;
-        textY += textHeight * 1.3f;
-        scoreFont.draw(batch, level, textX, textY);
-
+        scoreGlyphLayout.setText(levelFont, level);
+        textX += 15;
+        textY += 15;
+        levelFont.draw(batch, level, textX, textY);
     }
 
     // Rendu du block de la prochaine piece
@@ -235,8 +241,16 @@ public class WorldRenderer implements Disposable {
             for (int i = 0; i < worldController.nextTetromino.grid.length; i++) {
                 for (int j = 0; j < worldController.nextTetromino.grid[0].length; j++) {
                     if (worldController.nextTetromino.grid[i][j]) {
-                        int x = (marginRightCenterX - (worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);
-                        int y = FIELD_MARGIN_TOP + (i * BLOCK_WIDTH/2);
+                        int x, y;
+                        if (worldController.nextTetromino.type == 2){
+                            x = playfieldWidth - 18 + ((worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);
+                            y = FIELD_MARGIN_TOP + 25 + (i * BLOCK_WIDTH/2);
+                        }
+                        else{
+                            x = playfieldWidth - 10 + ((worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);  //(marginRightCenterX - (worldController.nextTetromino.grid[0].length / 2) * BLOCK_WIDTH/2) + (j * BLOCK_WIDTH/2);
+                            y = FIELD_MARGIN_TOP + 40 + (i * BLOCK_WIDTH/2);
+                        }
+
                         drawBlock(worldController.nextTetromino.type, x, y, true);
                     }
                 }

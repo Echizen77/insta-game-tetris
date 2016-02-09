@@ -9,8 +9,8 @@ public class TetrisGame extends ApplicationAdapter {
     private com.insta.games.tetris.WorldController worldController;
     protected com.insta.games.tetris.WorldRenderer worldRenderer;
 
-    protected final float gameWidth = 600f;
-    private final float gameHeight = 640f;
+    protected final float gameWidth = 355f;
+    private final float gameHeight = 625f;
 
 
     private boolean paused;
