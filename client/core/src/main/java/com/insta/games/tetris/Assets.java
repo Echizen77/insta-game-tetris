@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
-
+//test
 public class Assets implements Disposable, AssetErrorListener {
 
     public static final String TAG = Assets.class.getName();
